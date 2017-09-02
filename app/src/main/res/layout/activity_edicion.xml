@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayoutEdicion"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.kovas1ki.android.p3db.EdicionActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <EditText
+        android:id="@+id/editTextNombre"
+        style="@style/editTextNormalizadosPorCas"
+        android:ems="10"
+        android:hint="nombre"
+        android:inputType="textPersonName"/>
+
+    <EditText
+        android:id="@+id/editTextTelefono"
+        style="@style/editTextNormalizadosPorCas"
+        android:ems="10"
+        android:hint="@android:string/emptyPhoneNumber"
+        android:inputType="phone"/>
+</LinearLayout>
