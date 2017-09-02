@@ -4,6 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import static com.kovas1ki.android.p3db.data.P3dbContract.*;
+import static com.kovas1ki.android.p3db.data.P3dbContract.P3dbEntry.*;
+
 /**
  * Created by Usuario on 02/09/2017.
  */
@@ -26,10 +29,23 @@ public class P3dbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
+        // Creamos el String que contiene las sentencias SQL
+        String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ("
+                + CN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + CN_NOMBRE + " TEXT NOT NULL, "
+                + CN_NUMERO + " INTEGER);" ;
+
+        // Y ejecutamos el código invocando al , db , de este método
+        db.execSQL(SQL_CREATE_TABLE);
+
+
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+
 
     }
 }
