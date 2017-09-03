@@ -1,9 +1,11 @@
 package com.kovas1ki.android.p3db.data;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -47,7 +49,43 @@ public class P3dbProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        return null;
+
+        // Para este cursor que yo he bautizado como EL CURSOR PREGUNTANTE,
+        // va a ser muy fácil.
+        // Accedemos a la base en modo lectura.
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        // También declaramos el cursor.
+        Cursor cursor;
+
+        // Llegaremos a este método con la una URI. Esta URI sabemos que,
+        // depende de como termine haremos una cosa y otra. Simplemente
+        // contemplamos los dos casos usando URIMATCHER.
+        int match = uriMatcher.match(uri);
+        switch (match){
+            case TODA_LA_TABLA:
+                cursor = db.query(P3dbContract.P3dbEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+            case SINGLE_ITEM_ID:
+                // para el single item tenemos que modificar las dos variables afectadas
+                selection = P3dbContract.P3dbEntry.CN_ID + "=?" ;
+                // tenemos que construir el selectionArgs con el _id que encontramos en la uri
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+
+                // Ahora el cursor, claro.
+                cursor = db.query(P3dbContract.P3dbEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+            default:
+                throw new IllegalArgumentException("No se puede construir la query:" +
+                        "por estar tratando con la URI desconocida " + uri) ;
+        }
+
+        // Y si esto se ha hecho, pues también hay que notificar que ha
+        // habido cambios.
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
+
+        return cursor;
     }
 
     @Nullable
