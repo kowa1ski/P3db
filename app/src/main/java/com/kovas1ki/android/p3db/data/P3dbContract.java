@@ -14,13 +14,13 @@ public class P3dbContract {
     }   // Le nombramos el constructor vacío para evitar malentendidos.
 
     // Declaramos el content authority con el nombre del paquete
-    private static final String CONTENT_AUTHORITY = "com.kovas1ki.android.p3db" ;
+    public static final String CONTENT_AUTHORITY = "com.kovas1ki.android.p3db" ;
 
     // Declaramos la base para la URI del content provider
-    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY) ;
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY) ;
 
     // Ahora el segment, que es un posible path
-    private static final String PATH_SEGMENT = "p3tabla" ;
+    public static final String PATH_SEGMENT = "p3tabla" ;
 
     // Ahora la clase interna ENTRY e implementamos BaseColums
     public static final class P3dbEntry implements BaseColumns {
