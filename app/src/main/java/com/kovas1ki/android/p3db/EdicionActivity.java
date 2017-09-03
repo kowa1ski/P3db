@@ -2,11 +2,33 @@ package com.kovas1ki.android.p3db;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
 
 public class EdicionActivity extends AppCompatActivity {
+
+    // -------------------------------------------------------
+    //     ZONA DE DECLARACIÓN DE VARIABLES DE CLASE
+    //--------------------------------------------------------
+
+    // Como mandan las buenas prácticas, vamos a declarar un LOG_TAG
+    String LOG_TAG_EDIT_ACTIVITY = "EDIT_ACTIVITY" ;
+
+
+    // Vamos a declarar los dos textViews
+
+    EditText editTextCampoNombre;
+    EditText editTextCampoTelefono;
+
+
+
+
+    // ARRIBA SOLO HAY DECLARACIONES DE VARIABLES ----------------------------
+
+
 
     // Vamos a casar el nuevo menú
     // Estoy adaptando del del MAin.
@@ -40,18 +62,33 @@ public class EdicionActivity extends AppCompatActivity {
                 Toast.makeText(this, "has pulsado BOTON ELIMINAR", Toast.LENGTH_SHORT).show();
                 return true;
         }
-
-
-
-
         // Esta parte del return se deja tal cual para que
         return super.onOptionsItemSelected(item);
+    }
+
+    // Accedemos ya al método onBackPressed que siempre es bueno tener control
+    @Override
+    public void onBackPressed() {
+        // Comprobamos en el log que se recogen bien lo introducido en los editText
+        Log.i(LOG_TAG_EDIT_ACTIVITY, "Acabas de introducir: " + editTextCampoNombre.getText().toString() + " y " + editTextCampoTelefono.getText().toString()) ;
+        // Comprobado el , Log.i , funciona perfectamente.
+        super.onBackPressed();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edicion);
+
+        // Vamos a llenar las variables editText
+        editTextCampoNombre = (EditText) findViewById(R.id.editTextNombre) ;
+        editTextCampoTelefono = (EditText) findViewById(R.id.editTextTelefono) ;
+        // y pasamos la información en algún botón para verla. Lo haremos en el
+        // botón atrás.
+
+
+
+
     }
 
 }
