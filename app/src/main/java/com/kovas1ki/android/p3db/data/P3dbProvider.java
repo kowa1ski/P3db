@@ -2,6 +2,7 @@ package com.kovas1ki.android.p3db.data;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -15,6 +16,19 @@ import android.support.annotation.Nullable;
 // Creado el archivo java y extendido a ContentProvider y
     // creados automáticos todos los métodos
 public class P3dbProvider extends ContentProvider {
+
+    // Declaramos el código URIMATCHER para el contenido del uri en ambos casos
+    private static final int TODA_LA_TABLA = 100 ;
+    private static final int SINGLE_ITEM_ID = 101 ;
+
+    // Creamos el URIMATCHER
+    private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    // Y dejamos hechas las dos direcciones de acceso
+    static {
+        uriMatcher.addURI(P3dbContract.CONTENT_AUTHORITY, P3dbContract.PATH_SEGMENT, TODA_LA_TABLA);
+        uriMatcher.addURI(P3dbContract.CONTENT_AUTHORITY, P3dbContract.PATH_SEGMENT, SINGLE_ITEM_ID);
+    }
+
     @Override
     public boolean onCreate() {
         return false;
