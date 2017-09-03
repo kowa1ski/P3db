@@ -29,9 +29,19 @@ public class P3dbProvider extends ContentProvider {
         uriMatcher.addURI(P3dbContract.CONTENT_AUTHORITY, P3dbContract.PATH_SEGMENT, SINGLE_ITEM_ID);
     }
 
+    // Hay que declarar el objeto dbHelper
+    private P3dbHelper dbHelper;
+
     @Override
     public boolean onCreate() {
-        return false;
+
+        // En el onCreate del Provider está el acceso a la base
+        // de datos. Así que vamos a nombrarlo. Afuera declaramos el objeto
+        // y aquí lo inicializamos y retornamos TRUE yeeeeEaaA!!!!!
+        dbHelper = new P3dbHelper(getContext()) ;
+
+        // Que se retorna TRUE ahora que ya se va a poner a funcionar
+        return true;
     }
 
     @Nullable
