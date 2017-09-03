@@ -88,10 +88,22 @@ public class P3dbProvider extends ContentProvider {
         return cursor;
     }
 
+    // Devuelve el tipo MIME del dato contenido en la uri
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        return null;
+
+        final int match = uriMatcher.match(uri);
+        switch (match){
+            case TODA_LA_TABLA:
+                // devolvemos un String que es una dirección
+                return P3dbContract.P3dbEntry.CONTENT_LIST_TYPE ;
+            case SINGLE_ITEM_ID:
+                return P3dbContract.P3dbEntry.CONTENT_ITEM_TYPE ;
+            default:
+                throw new IllegalArgumentException("Desconocida URI "
+                + uri + " con match " + match) ;
+        } // Y el return me lo cargo porque ya estoy retornando valores tod el rato
     }
 
     @Nullable
