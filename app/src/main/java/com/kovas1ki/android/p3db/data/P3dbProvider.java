@@ -109,7 +109,24 @@ public class P3dbProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        return null;
+        
+        // Medimos la URI y si es 101 abrimos otro método para la inserción
+        final int match = uriMatcher.match(uri) ;
+        switch (match){
+            // La uri de inserción de llega hace referencia a que quiere insertar un registro
+            // dentro de la tabla, DE TODA LA TABLA. Es por eso que este , case , deber ser
+            // para TODA_LA_TABLA
+            case TODA_LA_TABLA:
+                return insertNewItem(uri, values) ;
+            default:
+                throw new IllegalArgumentException("La inserción no es soportada para " + uri) ;
+        }  // El return del método nos lo cargamos porque ya lo estamos dando antes
+    }
+
+    private Uri insertNewItem(Uri uri, ContentValues values) {
+
+        // TODO continuar aquí
+
     }
 
     @Override
