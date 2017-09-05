@@ -26,6 +26,7 @@ public class P3dbContract {
     public static final class P3dbEntry implements BaseColumns {
 
         // Contenido de la URI para acceder a la tabla del provider
+        // Esta , URI , no es más que la dirección de la tabla.
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_SEGMENT) ;
 
         // Nombre de la tabla

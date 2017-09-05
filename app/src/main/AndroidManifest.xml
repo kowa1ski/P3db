@@ -21,11 +21,14 @@
         </activity>
         <activity android:name=".EdicionActivity"></activity>
 
+        <!-- Hasta que sepa más de xml, tengo que estar atento
+        porque el Studio me proponía la otra terminación para la
+        declaración del provider. Sin embargo sólo esta es la
+        correcta-->
         <provider
             android:authorities="com.kovas1ki.android.p3db"
             android:name=".data.P3dbProvider"
-            android:exported="false"
-            ></provider>
+            android:exported="false"/>
 
 
     </application>

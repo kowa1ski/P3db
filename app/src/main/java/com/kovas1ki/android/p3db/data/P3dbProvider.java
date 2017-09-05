@@ -29,7 +29,7 @@ public class P3dbProvider extends ContentProvider {
     // Y dejamos hechas las dos direcciones de acceso
     static {
         uriMatcher.addURI(P3dbContract.CONTENT_AUTHORITY, P3dbContract.PATH_SEGMENT, TODA_LA_TABLA);
-        uriMatcher.addURI(P3dbContract.CONTENT_AUTHORITY, P3dbContract.PATH_SEGMENT, SINGLE_ITEM_ID);
+        uriMatcher.addURI(P3dbContract.CONTENT_AUTHORITY, P3dbContract.PATH_SEGMENT + "/#", SINGLE_ITEM_ID);
     }
 
     // Hay que declarar el objeto dbHelper

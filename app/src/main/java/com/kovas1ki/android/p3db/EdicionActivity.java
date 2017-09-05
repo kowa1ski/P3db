@@ -1,5 +1,7 @@
 package com.kovas1ki.android.p3db;
 
+import android.content.ContentValues;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +9,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.kovas1ki.android.p3db.data.P3dbContract;
+
+import static java.lang.Integer.parseInt;
 
 public class EdicionActivity extends AppCompatActivity {
 
@@ -22,6 +28,10 @@ public class EdicionActivity extends AppCompatActivity {
 
     EditText editTextCampoNombre;
     EditText editTextCampoTelefono;
+    // Y aquí vamos a declarar las variables que van a recoger la
+    // información que metamos en los editText
+    private String nombre;
+    private int telefono;
 
 
 
@@ -56,6 +66,12 @@ public class EdicionActivity extends AppCompatActivity {
         switch (itemIdOseaBotonPulsado){
             case R.id.botonAgregar:
                 Toast.makeText(this, "has pulsado BOTON AGREGAR", Toast.LENGTH_SHORT).show();
+
+                // Simple aquí. Le enviamos a un método que haga el trabajo y
+                // finalizamos la actividad.
+                guardarNuevoRegistro();
+                finish();
+
                 // Esto termina con el return true
                 return true;
             case R.id.botonEliminar:
@@ -64,6 +80,34 @@ public class EdicionActivity extends AppCompatActivity {
         }
         // Esta parte del return se deja tal cual para que
         return super.onOptionsItemSelected(item);
+    }
+
+    private void guardarNuevoRegistro() {
+
+        // Nos hacemos con la información contenida en los editText.
+        nombre = editTextCampoNombre.getText().toString();
+        telefono =  parseInt(editTextCampoTelefono.getText().toString());
+        // Cargamos esto en un ContentValues
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(P3dbContract.P3dbEntry.CN_NOMBRE, nombre);
+        contentValues.put(P3dbContract.P3dbEntry.CN_NUMERO, telefono);
+        // Ya está tod, ahora lo mandamos al provider y recordemos que
+        // nos devolverá una uri.
+        // El contentResolver nos resuelve todas estas gestiones con
+        // el provider.
+        Uri uriQueDevuelveElProvider = getContentResolver().insert(P3dbContract.P3dbEntry.CONTENT_URI, contentValues);
+
+        // Comprobamos que la uri ha sido devuelta de manera correcta y ya.
+        if (uriQueDevuelveElProvider == null){
+            Toast.makeText(this, "ERROR, uri " + uriQueDevuelveElProvider + " que ha devuelto " +
+                    "el provider es incorrecta", Toast.LENGTH_SHORT).show();
+        } else {
+            // Si estamos aquí, es que hemos pasado tod los filtros y tod ha salido bien
+            Toast.makeText(this, "REGISTRO AÑADIDO CORRECTAMENTE", Toast.LENGTH_SHORT).show();
+        }
+
+
+
     }
 
     // Accedemos ya al método onBackPressed que siempre es bueno tener control

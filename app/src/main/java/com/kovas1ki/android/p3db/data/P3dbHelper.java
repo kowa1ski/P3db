@@ -16,7 +16,7 @@ public class P3dbHelper extends SQLiteOpenHelper {
     // a declarar las variables y ajustasr el constructor.
 
     // Nombre de la base de datos
-    private final static String DATA_BASE_NAME = "P3db";
+    private final static String DATA_BASE_NAME = "P3db.db";
     // Número de la versión de la base de datos
     private final static int DATA_BASE_VERSION = 1 ;
 
