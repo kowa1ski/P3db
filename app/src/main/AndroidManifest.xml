@@ -20,6 +20,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".EdicionActivity"></activity>
+
+        <provider
+            android:authorities="com.kovas1ki.android.p3db"
+            android:name=".data.P3dbProvider"
+            android:exported="false"
+            ></provider>
+
+
     </application>
 
 </manifest>

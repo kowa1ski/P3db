@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * Created by Usuario on 03/09/2017.
@@ -125,8 +126,35 @@ public class P3dbProvider extends ContentProvider {
 
     private Uri insertNewItem(Uri uri, ContentValues values) {
 
-        // TODO continuar aquí
+        // Tenemos que chequear que el nombre no sea null, porque
+        // la base de datos no lo admitiría, le dijimos NOT NULL
+        String nombreQueEstamosComprobando = values.getAsString(P3dbContract.P3dbEntry.CN_NOMBRE);
+        if (nombreQueEstamosComprobando == null){
+            // si es null hay que controlar la excepción
+            throw new IllegalArgumentException("ERROS, el nombre es null");
+        }
+        // El teléfono no lo chequeamos porque puede ser null si hiciera falta
 
+        // Es el momento. Accedemos a la base
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        // Ahora vamos a introducir una nueva , row ,.
+        // Ten en cuenta que la inserción devuelve un long.
+        long id = db.insert(P3dbContract.P3dbEntry.TABLE_NAME, null, values);
+        // ahora comprobamos que la inserción ha sido correcta.
+        if (id == -1) {
+            // Si es -1 está claro que algo a fallado.
+            Log.e("TAG_PROVIDER", "ERROR al insertar row con la uri " +uri );
+        }
+        // Si estamos aquí está claro que tod ha ido bien.
+
+        // Antes de retornar y dar por finalizado este método tenemos que
+        // notificar a todos los listener que ha habido cambios en la tabla
+        // o lo que es lo mismo, en la dirección a donde apunta la , uri ,.
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        // El id nos da el número de fila así que se lo pegamos a la
+        // uri y lo devolvemos :-)
+        return ContentUris.withAppendedId(uri, id);
     }
 
     @Override
