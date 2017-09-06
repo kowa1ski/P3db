@@ -1,7 +1,11 @@
 package com.kovas1ki.android.p3db;
 
+import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,7 +19,14 @@ import com.kovas1ki.android.p3db.data.P3dbContract;
 
 import static java.lang.Integer.parseInt;
 
-public class EdicionActivity extends AppCompatActivity {
+
+// Estamos preparando esta pantalla para que sea también de edición así que
+// lo haremos con un cursorLoader y tenemos que implementar el loaderManager
+// para lo de los campos. Creo que es así.
+
+// CUIDADO EN LA IMPLEMENTACIÓN he tenido que añadir <Cursor>. Que no se olvide que
+// si no los métodos que se generan no son los apropiados.
+public class EdicionActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     // -------------------------------------------------------
     //     ZONA DE DECLARACIÓN DE VARIABLES DE CLASE
@@ -37,6 +48,10 @@ public class EdicionActivity extends AppCompatActivity {
     // Declaramos el currentItemUri. Con el mismo nombre que en la otra
     // actividad porque LO VAMOS A RESCATAR. yeeeeeeeaaaaa!!
     private Uri currentItemUri;
+
+    //Ya que tenemos lo del Loader, tenemos que ponerle el iniciador
+    // así que declaramos su estado de 0.
+    private static final int EXISTING_ITEM_LOADER = 0 ;
 
 
 
@@ -150,6 +165,17 @@ public class EdicionActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "El currentItemUri es el "
                     + currentItemUri, Toast.LENGTH_SHORT).show();
+
+            // Vamos a dar caña a este , else , y le vamos a iniciar el
+            // loader.
+            getLoaderManager().initLoader(EXISTING_ITEM_LOADER, null, this);
+            //Claro está que ahora tenemos que rellenar los métodos para que
+            // cargue la información que queremos en el cursor, la cual
+            // será cargada en segundo plano.
+
+            // y de paso le cambiamos el título
+            setTitle("EDICION DE REGISTRO");
+
         }
 
 
@@ -157,4 +183,79 @@ public class EdicionActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        // En este onCreateLoader, pues lo de siempre. La projection
+        // y luego retornamos el cursor resultante. Perdón, el
+        // NUEVO CURSOR LOADER resultante.
+        String[] projetion = {
+                P3dbContract.P3dbEntry.CN_ID,
+                P3dbContract.P3dbEntry.CN_NOMBRE,
+                P3dbContract.P3dbEntry.CN_NUMERO };
+
+        return new CursorLoader(this,   // este contexto
+                currentItemUri,         // La uri con la dirección completa
+                                            // del item
+                projetion,              // la projection, las columnas
+                null,                   // no selection CLAUSE
+                null,                   // no selection ARGUMENTS
+                null);                  // default SHORT ORDER
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        // Una vez finalizado el onCreateLoader, tenemos que medir el
+        // cursorloader resultante. Si tiene menos de una fila es que
+        // es un cursor vacío y por lo tanto no contiene información,
+        // lo que explicaría que NO había ninguna dirección en el
+        // currentItem, entre otras.
+        if (data == null || data.getCount() < 1 ) {
+            // En este caso de que está vacío y tal pues se retorna y ya.
+            return;
+        }
+
+        // En esta línea es que tod ha ido bien con la edición de los
+        // items. Vamos al lío.
+
+        // Empezamos con el movimiento al comienzo del cursor y a partir
+        // de ahí tod.
+        // Notamos que el cursor es llamado , data , en este método.
+        if (data.moveToFirst()){
+
+            // buscamos las colmnas con los atributos del item.
+            int nombreColumIndex = data.getColumnIndex(P3dbContract.P3dbEntry.CN_NOMBRE);
+            int telefonoColumIndex = data.getColumnIndex(P3dbContract.P3dbEntry.CN_NUMERO);
+
+            // Después de saber las columnas, extraemos los valores.
+            String nombreParaEditar = data.getString(nombreColumIndex);
+            int telefonoParaEditar = data.getInt(telefonoColumIndex);
+
+            // Y actualizamos los campo. ES FACIL
+            editTextCampoNombre.setText(nombreParaEditar);
+            editTextCampoTelefono.setText(Integer.toString(telefonoParaEditar));
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+        // Y el reset lo que hace es borrar los campor y ya.
+        editTextCampoNombre.setText("");
+        editTextCampoTelefono.setText("");
+
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
