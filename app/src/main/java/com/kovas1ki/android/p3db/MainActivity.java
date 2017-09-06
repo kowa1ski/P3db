@@ -1,6 +1,7 @@
 package com.kovas1ki.android.p3db;
 
 import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -15,6 +16,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+
+import com.kovas1ki.android.p3db.data.P3dbContract;
 
 
 // NOOOOOOO . no implementamos nada. Desde el , this , de abajo lo forzamos y es más práctico. Eso sí
@@ -94,18 +97,57 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     // Estos se generan automáticos desde arriba. Pero, como arriba cambiamos
     // Object por Cursor, pues aquí también.
+
+    // Vamos a completar estos métodos
+
+    // Lo primero es el onCreate del Loader. Le tenemos que decir aquello que
+    // queremos que haga cuando se le llame.
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
-    }
+
+        // Definimos una projection que le diga las columnas
+        // que queremos capturar en el cursor.
+
+        String[] projection = {
+                P3dbContract.P3dbEntry.CN_ID,
+                P3dbContract.P3dbEntry.CN_NOMBRE,
+                P3dbContract.P3dbEntry.CN_NUMERO
+        };
+
+        // Este loader ejecutará el método QUERY del ContentProvider en un
+        // hilo en background.
+        // Y eso mismo es lo que retornamos
+        return new CursorLoader(this,               // Contexto
+                P3dbContract.P3dbEntry.CONTENT_URI, // Uri del ContentProvider
+                                                    // para consultar
+                projection,                         // COLUMNAS A INCLUIR
+                null,                               // clausula
+                null,                               // no selection arguments
+                null);                              // default short order
+    }    // Ok, hecho
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        // Cuando finaliza lo que se ha estado haciendo en segundo plano
+        // es hora de montar esos datos. Se supone que aquí llega el Cursor
+        // ya cargadito. El cursor en cuestion vemos que lo llaman , data ,.
+
+        // Vamos a ordenarlo pues.
+        p3dbCursorAdapter.swapCursor(data);
 
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+
+        // Igual que el anterior pero para resetearlo lo que voy a
+        // hacer es no pasarle lo de antes(que tampoco podría por el
+        // método que es jajaj). En el Finished le pasábamos , data , que
+        // era el cursor cargadito.
+        // Aquí lo reseteamos así que le decimos que carque también
+        // pero en , null ,.
+        p3dbCursorAdapter.swapCursor(null);
 
     }
 
