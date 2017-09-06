@@ -1,6 +1,7 @@
 package com.kovas1ki.android.p3db;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,6 +33,10 @@ public class EdicionActivity extends AppCompatActivity {
     // información que metamos en los editText
     private String nombre;
     private int telefono;
+
+    // Declaramos el currentItemUri. Con el mismo nombre que en la otra
+    // actividad porque LO VAMOS A RESCATAR. yeeeeeeeaaaaa!!
+    private Uri currentItemUri;
 
 
 
@@ -129,6 +134,23 @@ public class EdicionActivity extends AppCompatActivity {
         editTextCampoTelefono = (EditText) findViewById(R.id.editTextTelefono) ;
         // y pasamos la información en algún botón para verla. Lo haremos en el
         // botón atrás.
+
+        // Si venimos a esta pantalla en modo edición tenemos que saberlo.
+        // Para ello leemos en intent que nos a traído hasta aquí.
+        Intent intent = getIntent();
+        currentItemUri = intent.getData(); // LO TENEMOS!!!!
+
+        // Vamos a probarlo
+        if (currentItemUri == null){
+            // Evidentemente en null, es que NO viene en modo edición
+            // sino que ha venido con el botón de agregar.
+            setTitle("NUEVO REGISTRO");
+            Toast.makeText(this, "El currentItemUri es el "
+                    + currentItemUri, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "El currentItemUri es el "
+                    + currentItemUri, Toast.LENGTH_SHORT).show();
+        }
 
 
 
