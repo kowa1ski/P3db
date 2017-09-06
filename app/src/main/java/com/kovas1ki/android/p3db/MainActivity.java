@@ -1,10 +1,12 @@
 package com.kovas1ki.android.p3db;
 
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -15,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.kovas1ki.android.p3db.data.P3dbContract;
@@ -62,6 +65,34 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         p3dbCursorAdapter = new P3dbCursorAdapter(this, null);
         // Y ordenamos la adaptación de la lista
         itemListView.setAdapter(p3dbCursorAdapter);
+
+        // Justo aquí, antes de iniciar el Loader, vamos a meter un listener
+        // al listView para detectar las pulsaciones y enviar un , intent ,
+        // a la pantalla EdicionActivity en modo edición. Claro, tendremos que enviar
+        // el _id del elemento pulsado.
+
+        // setOnClickListener
+        // El listener primero. Le ponemos setOn.. etc y dentro le marcamos nuevo
+        // onItem... etc
+        itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                // Tod lo generado se queda como está y vamos a crear el intent
+                Intent intent = new Intent(MainActivity.this, EdicionActivity.class);
+
+                // Si estamos aquí es que hemos pulsado en un item. Y cuál
+                // es?. Pues el actual, el actual.
+                // RECORDAMOS QUE LA BASE DE LAS uris ES CONTENT_URI
+                // el , id , de este método es el id del item actual.
+                // Montamos la URI haciendo uso de ContentUris.withAppenedId
+                Uri currentItemUri = ContentUris.withAppendedId(P3dbContract.P3dbEntry.CONTENT_URI, id);
+
+                // Pasamos la información del uri al intent y lo disparamos
+                intent.setData(currentItemUri);
+                startActivity(intent);
+            }
+        });
 
         // Hacemos uso de la clase LoaderManager para iniciar la misma,
         // que para eso la implementamos en la declaración de esta.
