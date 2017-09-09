@@ -164,6 +164,64 @@ public class P3dbProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+
+        final int match = uriMatcher.match(uri);
+        switch (match){
+            case TODA_LA_TABLA:
+                // No encuentro muy práctico lo de updatear toda la
+                // tabla con algo en esta app. Sí que tendría sentido en una
+                // app como la de las mascotas para resetear todos los
+                // campos de sexo y dejarlos a 0, por ejemplo.
+                return updateItem(uri, values, selection, selectionArgs);
+
+            // Y ahora el que nos interesa de verdad
+            case SINGLE_ITEM_ID:
+                // Para este caso debemos extraer el _id de la URI para identificar
+                // el item en concreto que queremos updatear. Luego, en la selección
+                // haremos , "_id=?" , y también los selection arguments serán
+                // un String Array conteniendo el actual ID.
+                // En el contenedor de valores ContentValues ya nos vendrán
+                // los datos a cambiar. Eso último se lo pasamos tal cual, claro.
+
+                // Venga, le decimos que queremos updatear los registros en base
+                // a su _id
+                selection = P3dbContract.P3dbEntry.CN_ID + "=?";
+                // En la selección le marcamos el id de esa columna que queremos updatear
+                selectionArgs = new String[] {
+                        String.valueOf(ContentUris.parseId(uri))
+                };
+                // Y con tod esto modificado, pues le pasamos los parámetros allí
+                return updateItem(uri, values, selection, selectionArgs);
+            // Y como, no, le metemos un default para controlar la excepción
+            default:
+                throw new IllegalArgumentException("UPDATE no es soportada para la uri " + uri);
+
+        }
+    }
+
+    private int updateItem(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+
+        // Este método retornaba 0 hasta ahora porque ese era el número
+        // de filas updateadas.
+
+        // Al lío. Accedemos a la base en modo escritura.
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        // Damos la orden del updateado y recogemos el número que
+        // devuelve que es el número de filas updateadas.
+        int rowsUpdated = database.update(
+                P3dbContract.P3dbEntry.TABLE_NAME,
+                values, selection, selectionArgs);
+
+        // IMPORTANTE
+        // Si una o más filas se han visto afectadas hay que
+        // avisar a todos los listeners que los datos han cambiado.
+        if (rowsUpdated != 0 ) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        // Por último, como es lógico, retornamos el número de filas
+        return rowsUpdated;
+
     }
 }

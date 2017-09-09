@@ -115,16 +115,48 @@ public class EdicionActivity extends AppCompatActivity implements LoaderManager.
         // nos devolverá una uri.
         // El contentResolver nos resuelve todas estas gestiones con
         // el provider.
-        Uri uriQueDevuelveElProvider = getContentResolver().insert(P3dbContract.P3dbEntry.CONTENT_URI, contentValues);
 
-        // Comprobamos que la uri ha sido devuelta de manera correcta y ya.
-        if (uriQueDevuelveElProvider == null){
-            Toast.makeText(this, "ERROR, uri " + uriQueDevuelveElProvider + " que ha devuelto " +
-                    "el provider es incorrecta", Toast.LENGTH_SHORT).show();
+        // Es hora de diferenciar si de verdad queremos guardar un nuevo registro
+        // o queremos actualizar uno existente. Para ello debemos comenzar con un
+        // if que nos mida el currentItemUri
+
+        if (currentItemUri == null){
+           // Y si es null, entonces sí que ejecutamos este bloque de código que
+            // antes operaba único ya ahora hemos metido dentro de este if.
+
+            Uri uriQueDevuelveElProvider = getContentResolver().insert(P3dbContract.P3dbEntry.CONTENT_URI, contentValues);
+
+            // Comprobamos que la uri ha sido devuelta de manera correcta y ya.
+            if (uriQueDevuelveElProvider == null){
+                Toast.makeText(this, "ERROR, uri " + uriQueDevuelveElProvider + " que ha devuelto " +
+                        "el provider es incorrecta", Toast.LENGTH_SHORT).show();
+            } else {
+                // Si estamos aquí, es que hemos pasado tod los filtros y tod ha salido bien
+                Toast.makeText(this, "REGISTRO AÑADIDO CORRECTAMENTE", Toast.LENGTH_SHORT).show();
+            }
         } else {
-            // Si estamos aquí, es que hemos pasado tod los filtros y tod ha salido bien
-            Toast.makeText(this, "REGISTRO AÑADIDO CORRECTAMENTE", Toast.LENGTH_SHORT).show();
+            // Y ahora sí, ahora estamos seguros de que en el currentItemUri tenemos
+            // algo. Y si es así, lo que queremos es updatear así que vamos a ello.
+            // Nos fijamos bien en que el mismo programa nos pide dentro de los paréntesis
+            // NO una url como en el caso del insert. Aquí necesita una uri que evidentemente
+            // es el currentItemUri y el resto de cosas que ya tenemos.
+            // También nos pide la clausula where pero eso ya se lo damos en el provider
+            int rowsAfected = getContentResolver().update(currentItemUri, contentValues, null, null );
+            // Y ahora comprobamos que tod ha salido bien, o sea, que hay más de una
+            // row que ha sido updateada.
+            if (rowsAfected == 0){
+                // Si no hay filas updateadas, algo ha salido mal.
+                Toast.makeText(this, "EDICIÓN DE ITEM FALLIDA", Toast.LENGTH_SHORT).show();
+            } else {
+                // Si sí que ha habido filas, entonces sí que tod ha salido bien.
+                Toast.makeText(this, "EDICIÓN REALIZADA CON ÉXITO", Toast.LENGTH_SHORT).show();
+            }
+
+
         }
+
+
+
 
 
 
