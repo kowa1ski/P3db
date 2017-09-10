@@ -3,10 +3,12 @@ package com.kovas1ki.android.p3db;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -96,11 +98,59 @@ public class EdicionActivity extends AppCompatActivity implements LoaderManager.
                 return true;
             case R.id.botonEliminar:
                 Toast.makeText(this, "has pulsado BOTON ELIMINAR", Toast.LENGTH_SHORT).show();
-                eliminarRegistro(); // Llamamos a una NUEVA función y la creamos con alt+enter
+               // esto ya no se hace aquí, eliminarRegistro(); // Llamamos a una NUEVA función y la creamos con alt+enter
+                // Primero, antes de llamar a ese procedimiento, vamos a hacer algo muy chulo
+                // y vamos a lanzar una ventana de confirmación y luego, ya desde allí,
+                // si confirma positivo llamamos a ese método.
+                // Vamos a crear un procedimiento adrede para crear la ventana
+                showDeleteAlertDialogBuilder();
+
                 return true;
         }
         // Esta parte del return se deja tal cual para que
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showDeleteAlertDialogBuilder() {
+
+        // Vamos a crear un AlertdialogBuilder que se compone
+        // de un mensaje y dos botones(con 2 listeners)
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        // ahora lo buildeamos
+        alertDialogBuilder.setMessage("ELIMINARÁS ESTE REGISTRO?");
+
+        // y ahora los botones
+
+        // Primero el positivo
+        // Dentro de los parámetros es fácil, le ponemos un mensaje y
+        // un listener para escuchar su pulsación
+        alertDialogBuilder.setPositiveButton("ELIMINAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Pues si pulsamos este botón, simplemente
+                // borramos el registro
+                eliminarRegistro();
+            }
+        });
+        // Y el botón negativo
+        alertDialogBuilder.setNegativeButton("no eliminar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Pues en este botón nos hemos arrepentido de la eliminación
+                // No sé por qué pero hay que comparar que el dialog no es null antes
+                // de dismiss el dialog
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        // Una vez construido tod el mensaje, sólo nos falta mostrarlo.
+        // Para hacerlo CREAMOS UN OBJETO de la clase AlertDialog,
+        // le MONTO TOD EL BUILDER ANTERIOR y luego ya lo muestro.
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     private void eliminarRegistro() {
