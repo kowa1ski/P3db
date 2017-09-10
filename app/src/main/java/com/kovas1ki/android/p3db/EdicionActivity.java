@@ -146,16 +146,12 @@ public class EdicionActivity extends AppCompatActivity implements LoaderManager.
             // hace muy limitado. Necesito poner un medidor para que no se me pase de largo
 
         } catch (Exception e){
-            Toast.makeText(this, "Integer NO ES VALIDO", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Integer NO ES VALIDO y se sustituye por el " +
+                    "número genérico 0", Toast.LENGTH_SHORT).show();
             // Una vez lanzado el Toast no puedo dejar que continúe el flujo así
             // que retorno
-            return;
-
-
+            telefono = 0;
         }
-
-
-
         // Cargamos esto en un ContentValues
         ContentValues contentValues = new ContentValues();
         contentValues.put(P3dbContract.P3dbEntry.CN_NOMBRE, nombre);
