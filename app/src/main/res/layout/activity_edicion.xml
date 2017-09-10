@@ -15,10 +15,21 @@
         android:hint="nombre"
         android:inputType="textPersonName"/>
 
+    <!-- En el textView del telefono se ha limitado el numero de
+     caracteres a 9 para que no se desborde la variable Integer.
+     No obstante esta mas que claro que la variable para un
+     telefono debe ser siempre un String porque el teclado que aparece
+     te permite añadir otros signos que no son números. Así que
+     esto de la limitación queda como anecdota CHAPUCERA.
+     DESDE QUE EL INPUTTYPE ES , PHONE , LA VARIABLE YA NO DEBE
+     SER INTEGER PORQUE CORRE EL RIESGO DE RECOGER OTRAS COSAS
+     QUE NO SON NUMEROS O NUMEROS DESBORDANTES-->
+
     <EditText
         android:id="@+id/editTextTelefono"
         style="@style/editTextNormalizadosPorCas"
         android:ems="10"
         android:hint="@android:string/emptyPhoneNumber"
+        android:maxLength="9"
         android:inputType="phone"/>
 </LinearLayout>
