@@ -96,10 +96,41 @@ public class EdicionActivity extends AppCompatActivity implements LoaderManager.
                 return true;
             case R.id.botonEliminar:
                 Toast.makeText(this, "has pulsado BOTON ELIMINAR", Toast.LENGTH_SHORT).show();
+                eliminarRegistro(); // Llamamos a una NUEVA función y la creamos con alt+enter
                 return true;
         }
         // Esta parte del return se deja tal cual para que
         return super.onOptionsItemSelected(item);
+    }
+
+    private void eliminarRegistro() {
+
+        // Una pequeña comprobación antes de comenzar.
+        // Tod lo que vamos a hacer es sólo si el currentItemUri es
+        // no null, o sea, que contiene algo que borrar. Esto quiere decir
+        // que tod el bloque de código que vamos a generar es con la
+        // condición de que haya algún registro que borrar.
+        if (currentItemUri != null ) {
+
+            // Una vez comprobado, ya sabemos que el currentItemUri contiene
+            // algo así que sólo tenemos que borrarlo.
+            // Los parámetros when y la claúsula se la pasamos al Provider en null
+            // porque ya apañamos allí con el currentItemUri que contiene toda
+            // la información necesaria.
+            int rowsDeleted = getContentResolver().delete(currentItemUri, null, null);
+
+            // El rowsDeleted vuelve del Provider con un valor y éste tiene que ser
+            // diferente de 0 para demostrar que hemos borrado alguna fila.
+            if (rowsDeleted == 0){
+                // Si no hay filas borradas, no hemos borrado nada.
+                Toast.makeText(this, "ERROR, no se ha borrado nada", Toast.LENGTH_SHORT).show();
+            } else {
+                // Si , else , entonces sí que hay filas borradas
+                Toast.makeText(this, "REGISTRO BORRADO correctamente", Toast.LENGTH_SHORT).show();
+            }
+            // Y después de tod, no nos olvidamos de finalizar esta Actividad
+            finish();
+        }
     }
 
     private void guardarNuevoRegistro() {
@@ -151,15 +182,7 @@ public class EdicionActivity extends AppCompatActivity implements LoaderManager.
                 // Si sí que ha habido filas, entonces sí que tod ha salido bien.
                 Toast.makeText(this, "EDICIÓN REALIZADA CON ÉXITO", Toast.LENGTH_SHORT).show();
             }
-
-
         }
-
-
-
-
-
-
     }
 
     // Accedemos ya al método onBackPressed que siempre es bueno tener control
@@ -209,10 +232,6 @@ public class EdicionActivity extends AppCompatActivity implements LoaderManager.
             setTitle("EDICION DE REGISTRO");
 
         }
-
-
-
-
     }
 
 
