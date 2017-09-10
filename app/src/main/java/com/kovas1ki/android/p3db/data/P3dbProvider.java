@@ -159,7 +159,64 @@ public class P3dbProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+
+        // Estamos en el último paso que es completar el delete de este lado,
+        // del lado del Provider.
+        // en primer lugar, como no, accedemos a la base en modo escritura.
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        // Y creamos una variable que recoja el número de rows borradas.
+        int rowsDeleted;
+
+        // Tenemos que tener en cuenta que vamos a confeccionar esto
+        // de una manera completa. Es cierto que, como tenemos pensada esta
+        // app, no se contempla la opción de borrar toda la tabla. Sin
+        // embargo esto es una práctica así que lo vamos a dejar preparado para
+        // tener esa opción si quisiéramos.
+        // Para lo expuesto ya sabes lo que toca. Pues sí, echar mano
+        // del urimatcher. Venga, es fácil.
+        final int match = uriMatcher.match(uri);
+        // y ahora las dos posibilidades en un switch case
+        switch (match){
+            case TODA_LA_TABLA:
+                // borramos tod
+                rowsDeleted = db.delete(P3dbContract.P3dbEntry.TABLE_NAME, null, null);
+                // ya estaría esto. Después de todos los , case , ya retornaríamos
+                // la variable.
+                break;
+            case SINGLE_ITEM_ID:
+                // Este es el caso que nos interesa. Tenemos la uri, donde al final de
+                // la misma nos dice el _id que tenemos que borrar. Así que lo primero
+                // que se nos viene a la mente es que la selection será, como no,
+                // por el _id. Venga.
+                selection = P3dbContract.P3dbEntry.CN_ID + "=?";
+                // Y, joder, los argumentos que se le dan para encontrar ese _id
+                // son el _id que encontramos al final del currentItemUri que ha pasado
+                // a este método con el nombre de , uri ,.
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                // Chupado.
+
+                // Y ahora a BORRAR COMO LOCOSSSSSSSS
+                rowsDeleted = db.delete(P3dbContract.P3dbEntry.TABLE_NAME,
+                        selection,       // String whereClause
+                        selectionArgs    // String[] whereArgs //
+                ); // Y ya
+                break;
+            // Y el típico default que no puede faltar. Lo aprovechamos para
+            // atrapar excepciones en caso de que salga algo muy muy mal.
+            default:
+                throw new IllegalArgumentException("Deletion is not supported for " + uri);
+
+        }
+        // Ahora ya toca retornar el valor de las rows, pero antes, si tod
+        // ha salido bien, MUY IMPORTANTE, hay que notificar a todos los
+        // listeners que la base ha cambiado.
+        // La instrucción te pide un , observer , que le paso en null. No
+        // tengo idea de qué es pero se le pasa en null, está bien hecho así.
+        if (rowsDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        // Por fin retornamos el valor de las rows y damos por terminado esto.
+        return rowsDeleted;
     }
 
     @Override
@@ -222,6 +279,5 @@ public class P3dbProvider extends ContentProvider {
 
         // Por último, como es lógico, retornamos el número de filas
         return rowsUpdated;
-
     }
 }

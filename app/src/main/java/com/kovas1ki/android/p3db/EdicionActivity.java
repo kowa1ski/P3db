@@ -137,7 +137,25 @@ public class EdicionActivity extends AppCompatActivity implements LoaderManager.
 
         // Nos hacemos con la información contenida en los editText.
         nombre = editTextCampoNombre.getText().toString();
-        telefono =  parseInt(editTextCampoTelefono.getText().toString());
+
+        // ERROR DETECTADO IMPORTANTE --------
+        try {
+            telefono =  parseInt(editTextCampoTelefono.getText().toString());
+            // ATENTOS !!!!!!!!! -------------------
+            // He detectado un error posible. El teléfono es un número muy largo y ser , int , lo
+            // hace muy limitado. Necesito poner un medidor para que no se me pase de largo
+
+        } catch (Exception e){
+            Toast.makeText(this, "Integer NO ES VALIDO", Toast.LENGTH_SHORT).show();
+            // Una vez lanzado el Toast no puedo dejar que continúe el flujo así
+            // que retorno
+            return;
+
+
+        }
+
+
+
         // Cargamos esto en un ContentValues
         ContentValues contentValues = new ContentValues();
         contentValues.put(P3dbContract.P3dbEntry.CN_NOMBRE, nombre);
