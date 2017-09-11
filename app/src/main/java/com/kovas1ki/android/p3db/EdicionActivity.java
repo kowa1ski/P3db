@@ -80,12 +80,7 @@ public class EdicionActivity extends AppCompatActivity implements LoaderManager.
         }
     }; // Y lo terminamos con un ;
 
-
-
-
     // ARRIBA SOLO HAY DECLARACIONES DE VARIABLES ----------------------------
-
-
 
     // Vamos a casar el nuevo menú
     // Estoy adaptando del del MAin.

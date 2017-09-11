@@ -23,6 +23,12 @@ import android.widget.ListView;
 import com.kovas1ki.android.p3db.data.P3dbContract;
 
 
+// Con este último comentario cierro el último comit y doy por
+// terminada la app. Como siempre ha sido un placer conmigo mismo.
+// La próxima será igual pero espero que más rápida y con los conceptos
+// más interiorizados. Fin.
+
+
 // NOOOOOOO . no implementamos nada. Desde el , this , de abajo lo forzamos y es más práctico. Eso sí
 // donde pone , <Objetct> , en automático hay que cambiarlo por la palabra , Cursor ,.
 // (y en los métodos que generamos a partir de esto también le cambiamos a , Cursor ,.
