@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -54,6 +56,29 @@ public class EdicionActivity extends AppCompatActivity implements LoaderManager.
     //Ya que tenemos lo del Loader, tenemos que ponerle el iniciador
     // así que declaramos su estado de 0.
     private static final int EXISTING_ITEM_LOADER = 0 ;
+
+    // Por último vamos a crear una variable que vamos a llamar
+    // la variable del cambio. Esta variable booleana va a cambiar de
+    // estado cuando el usuario TOQUE cualquiera de los editText.
+    //
+    // Primero declaramos la variable.
+    private boolean hasTocadoLosEditText = false; // lo inicializamos en falso.
+    // Y seguidamente, antes de que se nos olvide, vamos a declarar el
+    // listener al que vincularemos los TOQUES en los editText.
+    View.OnTouchListener seHaTOCADO = new View.OnTouchListener() {
+        @Override       // Este Override salta solito al poner la línea de arriba
+        public boolean onTouch(View v, MotionEvent event) {
+            // Simplmente si existe un toque, cambiamos el valor de la
+            // variable del cambio a verdadero. ES FACIL.
+            hasTocadoLosEditText = true ;
+
+            Toast.makeText(EdicionActivity.this, "Has tocado un " +
+                    "EditText y el valor de , hasTocadoLosEditText," +
+                    " es: " + hasTocadoLosEditText, Toast.LENGTH_SHORT).show();
+
+            return false; // conservamos esta línea como la última
+        }
+    }; // Y lo terminamos con un ;
 
 
 
@@ -268,6 +293,11 @@ public class EdicionActivity extends AppCompatActivity implements LoaderManager.
         editTextCampoTelefono = (EditText) findViewById(R.id.editTextTelefono) ;
         // y pasamos la información en algún botón para verla. Lo haremos en el
         // botón atrás.
+
+        // Justo aquí debajito de los castings, vamos a poner los listeners
+        // para los editText.
+        editTextCampoNombre.setOnTouchListener(seHaTOCADO);
+        editTextCampoTelefono.setOnTouchListener(seHaTOCADO);
 
         // Si venimos a esta pantalla en modo edición tenemos que saberlo.
         // Para ello leemos en intent que nos a traído hasta aquí.
