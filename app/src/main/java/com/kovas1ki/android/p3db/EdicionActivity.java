@@ -277,10 +277,56 @@ public class EdicionActivity extends AppCompatActivity implements LoaderManager.
     // Accedemos ya al método onBackPressed que siempre es bueno tener control
     @Override
     public void onBackPressed() {
-        // Comprobamos en el log que se recogen bien lo introducido en los editText
-        Log.i(LOG_TAG_EDIT_ACTIVITY, "Acabas de introducir: " + editTextCampoNombre.getText().toString() + " y " + editTextCampoTelefono.getText().toString()) ;
-        // Comprobado el , Log.i , funciona perfectamente.
-        super.onBackPressed();
+        // Comprobamos si ha habido o no cambios en los ediText
+        if (hasTocadoLosEditText){
+           avisoQueTePiras();
+        } else { // Sólo si es negativo hacemos onBackPressed.
+                // No lo podemos poner fuera del , else , no
+                // sería lo mismo
+            super.onBackPressed();
+
+        }
+
+
+    }
+
+    /**
+     * Estoy muy orgulloso, esta estructura la he organizado yo.
+     * Es sencillo:
+     * 1. Creamos el AlertDialog en fase builder.
+     * 2. Construimos con el builder:
+     *  a. el mensaje
+     *  b. un botón
+     *  c. el otro botón
+     * 3. Creamos el AlertDialog a través de lo construído(create)
+     * 4. Lo mostramos(show)
+     *
+     * MUY FACIL ----------
+     */
+    private void avisoQueTePiras() {
+
+        AlertDialog.Builder cuidadoQueTePirasSinSalvar = new AlertDialog.Builder(this);
+        cuidadoQueTePirasSinSalvar.setMessage("Has relizado cambios y estás apunto de " +
+                "marcharte. ESTÁS SEGURO?");
+
+        cuidadoQueTePirasSinSalvar.setPositiveButton("SÁCAME de aquí", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                hasTocadoLosEditText = false ;
+                onBackPressed();
+
+            }
+        });
+        cuidadoQueTePirasSinSalvar.setNegativeButton("NORRR, déjame aquí", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alertdialog = cuidadoQueTePirasSinSalvar.create();
+        alertdialog.show();
+
     }
 
     @Override
